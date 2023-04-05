@@ -9,14 +9,6 @@ terraform {
       version = ">= 3.0.0"
     }
   }
-
-  backend "azurerm" {
-    resource_group_name  = "rg01"
-    storage_account_name = "hhstg01"
-    container_name       = "cont01"
-    key                  = "azuredevops.cont01"
-  }
-
 }
 
 provider "azurerm" {
