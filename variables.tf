@@ -1,8 +1,10 @@
-variable "client_secret" {
-  type        = string
-  default     = "1b7fb14c-e183-46f1-affc-5e1395a7dbdc"
-  description = "description"
-}
+
+#variable "Client_Secret" {
+#  type        = string
+#name        = SPNPass
+##value       = azuread_service_principal_password.tfazsp.value
+#description = "description"
+#s}
 
 variable "tenant_id" {
   type        = string
@@ -18,7 +20,7 @@ variable "subscription_id" {
 
 variable "client_id" {
   type        = string
-  default     = "ac31a660-2150-4dc6-942b-08c01c984401"
+  default     = ""
   description = "description"
 }
 
@@ -30,7 +32,7 @@ variable "rg_name" {
 
 variable "stg_access_key" {
   type        = string
-  default     = "56yfM9zD9TANHSBRh3oPgIKl0HsIjfaMb5GTmuC+zs5GlcAmho7v5WN6Uk7bF9ahwoPGLPkGdR1s+ASt/ux53g=="
+  default     = ""
   description = "description"
 }
 
@@ -70,7 +72,7 @@ variable "storageAccount_name" {
   description = "description"
 }
 
-variable "container_name" {
+variable "cont_name" {
   type        = string
   default     = "cont01"
   description = "description"
@@ -100,13 +102,6 @@ variable "AZDO_GITHUB_SERVICE_CONNECTION_PAT" {
   description = "description"
 }
 
-
-variable "name" {
-  type        = string
-  default     = ""
-  description = "description"
-}
-
 variable "AzureAD_ApplicationName" {
   type        = string
   default     = "tfazSPN"
@@ -117,4 +112,56 @@ variable "AzureAD_SPN_Password_Expiry" {
   type        = string
   default     = "2028-01-01T01:02:03Z"
   description = "The End Date which the Password is valid until, formatted as a RFC3339 date string (e.g. 2018-01-01T01:02:03Z)."
+}
+
+variable "sub_name" {
+  type        = string
+  default     = "payg"
+  description = "description"
+}
+
+variable "AdoProName" {
+  type        = string
+  default     = "HawaS"
+  description = "description"
+}
+
+variable "virtual_network" {
+  description = "virtual network address space"
+  default     = "10.0.0.0/16"
+}
+variable "internal_subnet" {
+  default = "10.0.2.0/24"
+}
+variable "office-WAN" {
+  description = "The WAN IP of the office so I can RDP into my test enviornment"
+  default     = "181.171.126.253"
+}
+variable "vm_name" {
+  description = "The name given to the vm"
+  default     = "vm-srv01"
+}
+variable "vm_size" {
+  description = "The size of the VM"
+  default     = "Standard_A2_v2"
+}
+variable "storageimage_publisher" {
+  description = "The OS image publisher"
+  default     = "MicrosoftWindowsServer"
+}
+variable "storageimage_offer" {
+  description = "The OS image offer"
+  default     = "WindowsServer"
+}
+variable "storageimage_sku" {
+  description = "The OS SKU"
+  default     = "2019-datacenter"
+}
+variable "storageimage_version" {
+  description = "The OS image version"
+  default     = "latest"
+}
+variable "manageddisk_type" {
+  description = "The managed disk type for the VM"
+  default     = "Standard_LRS"
 }
