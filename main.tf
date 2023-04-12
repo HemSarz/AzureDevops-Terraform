@@ -124,6 +124,14 @@ resource "azuredevops_project" "tfaz" {
 
 ############ Azure DevOps REPO ############
 
+resource "azuredevops_git_repository" "tfaz_repo" {
+  project_id = azuredevops_project.tfaz.id
+  name       = "TfazRepo"
+  initialization {
+    init_type = "Clean"
+  }
+}
+
 ############ Azure DevOps Pipeline ############
 
 resource "azuredevops_build_definition" "DeployPipeline" {
@@ -135,15 +143,16 @@ resource "azuredevops_build_definition" "DeployPipeline" {
     use_yaml = true
   }
 
-  variable_groups = [azuredevops_variable_group.hawaVB.id]
+  variable_groups = [
+
+    azuredevops_variable_group.hawaVB.id
+
+  ]
 
   repository {
     repo_type   = "TfsGit"
-    repo_id     = data.azuredevops_project.tfaz.id
-    branch_name = "master"
-    yml_path    = "Example.yml"
+    repo_id     = azuredevops_project.tfaz.id
+    branch_name = azuredevops_git_repository.tfaz_repo.default_branch
+    yml_path    = "./BuildDefinitions/Example.yml"
   }
-
-  depends_on = [azuredevops_project.tfaz]
-
 }
