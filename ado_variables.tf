@@ -5,20 +5,17 @@ resource "azuredevops_variable_group" "hawaVB" {
   allow_access = true
 
   variable {
-    name      = "SPNPass"
-    value     = azuread_service_principal_password.tfazsp.value
-    is_secret = true
+    name  = "SPNPass"
+    value = azuread_application_password.tfazsp.value
   }
 
   variable {
-    name      = "SASPass"
-    value     = azurerm_storage_account.stg.primary_access_key
-    is_secret = true
+    name  = "SASPass"
+    value = azurerm_storage_account.stg.primary_access_key
   }
 
   variable {
-    name      = "VMAdminPass"
-    value     = var.VMAdminPass
-    is_secret = true
+    name  = "VMAdminPass"
+    value = var.VMAdminPass
   }
 }

@@ -1,4 +1,3 @@
-YAML
 trigger:
   branches:
     include:
@@ -6,10 +5,8 @@ trigger:
 
   paths:
     include:
-      - /tfaz/variables.tf
-      - /tfaz/main.tf
-        /tfaz/ado_variables.tf
-
+      - /TFAZ/variables.tf
+      - /TFAZ/main.tf
 
 pool:
   vmImage: "ubuntu-latest"
@@ -22,21 +19,25 @@ steps:
     displayName: 'Install Terraform'
   - script: terraform version
     displayName: Terraform Version
-  - task: PowerShell@2
+  - task: PowerShell@1
     inputs:
-    targetType: 'inline'
-    script: 'Write-Host "##vso[task.setvariable variable=storage_account_SASPass;isOutput=true]$(terraform output -raw outputvar)"'
-    script: 'Write-Host "##vso[task.setvariable variable=pass_tfazsp;isOutput=true]$(terraform output -raw outputvar)"'
-    script: 'Write-Host "##vso[task.setvariable variable=appid_tfazsp;isOutput=true]$(terraform output -raw outputvar)"'
-    workingDirectory: $(System.DefaultWorkingDirectory)/tfaz
-  - script:  az login --service-principal -u $(appid_tfazsp) -p $(pass_tfazsp) --tenant $(tenant_id)
+      targetType: 'inline'
+      script: |
+        Write-Host "##vso[task.setvariable variable=storage_account_SASPass;isOutput=true]$(terraform output -raw outputvar)"
+        
+        Write-Host "##vso[task.setvariable variable=pass_tfazsp;isOutput=true]$(terraform output -raw outputvar)"
+        
+        Write-Host "##vso[task.setvariable variable=appid_tfazsp;isOutput=true]$(terraform output -raw outputvar)"
+      workingDirectory: $(System.DefaultWorkingDirectory)/TFAZ
+
+  - script: az login --service-principal -u $(appid_tfazsp) -p $(pass_tfazsp) --tenant $(tenant_id)
     displayName: 'Log Into Azure'
   - script: terraform init -backend-config=resource_group_name=$(rg_name) -backend-config="storage_account_name=$(storageAccount_name)" -backend-config="container_name=$(cont_name)" -backend-config="access_key=$(storage_account_SASPass)" -backend-config="key=$(state_file)"
     displayName: "Terraform Init"
-    workingDirectory: $(System.DefaultWorkingDirectory)/tfaz
+    workingDirectory: $(System.DefaultWorkingDirectory)/TFAZ
   - script: terraform plan -var=$(appid_tfazsp) -var="$(pass_tfazsp)" -var="tenant_id=$(tenant_id)" -var="subscription_id=$(subscription_id)" -var=$(VMAdminPass) -out="out.plan"
     displayName: Terraform Plan
-    workingDirectory: $(System.DefaultWorkingDirectory)/tfaz
+    workingDirectory: $(System.DefaultWorkingDirectory)/TFAZ
   - script: terraform apply out.plan
     displayName: 'Terraform Apply'
-    workingDirectory: $(System.DefaultWorkingDirectory)/tfaz
+    workingDirectory: $(System.DefaultWorkingDirectory)/TFAZ

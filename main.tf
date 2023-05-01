@@ -25,11 +25,6 @@ resource "azurerm_storage_container" "cont" {
   container_access_type = "private"
 }
 
-output "stg_SASPass" {
-  value     = data.azurerm_storage_account.stg.primary_access_key
-  sensitive = true
-}
-
 ############ KeyVault ############
 
 resource "azurerm_key_vault" "kv" {
@@ -66,7 +61,7 @@ resource "azuredevops_serviceendpoint_azurerm" "AzServEndPoint" {
 
   credentials {
     serviceprincipalid  = azuread_service_principal.tfazsp.application_id
-    serviceprincipalkey = azuread_service_principal_password.tfazsp.value
+    serviceprincipalkey = azuread_application_password.tfazsp.value
   }
 }
 
@@ -82,24 +77,14 @@ resource "azuread_service_principal" "tfazsp" {
   owners         = [data.azuread_client_config.current.object_id]
 }
 
-resource "azuread_service_principal_password" "tfazsp" {
-  service_principal_id = azuread_service_principal.tfazsp.id
+resource "azuread_application_password" "tfazsp" {
+  application_object_id = azuread_application.tfazsp.object_id
 }
 
 resource "azurerm_role_assignment" "main" {
   principal_id         = azuread_service_principal.tfazsp.id
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Contributor"
-}
-
-output "appid_tfazsp" {
-  value     = data.azurerm_client_config.current.client_id
-  sensitive = true
-}
-
-output "pass_tfazsp" {
-  value     = azuread_service_principal_password.tfazsp.value
-  sensitive = true
 }
 
 ################# AZURE DEVOPS ################# 
@@ -125,8 +110,9 @@ resource "azuredevops_project" "tfaz" {
 ############ Azure DevOps REPO ############
 
 resource "azuredevops_git_repository" "tfaz_repo" {
-  project_id = azuredevops_project.tfaz.id
-  name       = "TfazRepo"
+  project_id     = azuredevops_project.tfaz.id
+  name           = "TfazRepo"
+  default_branch = "refs/heads/main"
   initialization {
     init_type = "Clean"
   }

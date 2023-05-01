@@ -86,7 +86,7 @@ variable "keyvault_name" {
 
 variable "AZDO_PERSONAL_ACCESS_TOKEN" {
   type        = string
-  default     = "4xpary6gl7fkcp5pfa5ya7unybitquncwwkgl27wgaiz4qzbnpha"
+  default     = "35mrwzmerw4xsscyabunczkpbnhfbqimkzaz32bxsb2vpmhh2x7a"
   description = "description"
 }
 
